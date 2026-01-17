@@ -277,14 +277,15 @@
             padding: 8px;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position above */
+            bottom: 125%;
+            /* Position above */
             left: 50%;
             margin-left: -125px;
             opacity: 0;
             transition: opacity 0.3s;
             font-size: 12px;
             font-weight: 400;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border);
             line-height: 1.4;
         }
@@ -399,7 +400,8 @@
         const Disclaimer = () => {
             return (
                 <div className="disclaimer">
-                    Upozornění: Veškeré výpočty provedené touto kalkulačkou jsou pouze orientační. Pro účely oficiálního projektu elektro, revizní zprávy nebo sjednání rezervovaného příkonu u distributora je nezbytné obrátit se na autorizovaného odborníka.
+                    Upozornění: Veškeré výpočty provedené touto kalkulačkou jsou pouze orientační. Pro účely oficiálního projektu elektro, revizní zprávy nebo sjednání rezervovaného příkonu u distributora je nezbytné obrátit se na autorizovaného odborníka.<br />
+                    <span style={{ opacity: 0.5, fontSize: '0.8em' }}>v1.1</span>
                 </div>
             );
         };
@@ -497,7 +499,7 @@
                     />
 
                     <InputGroup
-                        title={<>3. <TooltipLabel text="Energy System (optimalizace)" tooltip="Energy system je vhodná pro všechna zařízení od 2kW příkonu (mycí stroje, konvektomaty, multifunkční zařízení apod.)" /></>}
+                        title={<span>3. <TooltipLabel text="Energy System (optimalizace)" tooltip="Energy system je vhodná pro všechna zařízení od 2kW příkonu (mycí stroje, konvektomaty, multifunkční zařízení apod.)" /></span>}
                         power={power3}
                         setPower={setPower3}
                         coeff={coeff3}
