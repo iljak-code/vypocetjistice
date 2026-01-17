@@ -54,7 +54,7 @@ function App() {
             />
 
             <InputGroup
-                title="Skupina B (Log-IQ)"
+                title="Skupina B (Energy system)"
                 power={powerB}
                 setPower={setPowerB}
                 coeff={coeffB}
