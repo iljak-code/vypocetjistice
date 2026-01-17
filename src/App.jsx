@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import InputGroup from './components/InputGroup';
 import ResultDisplay from './components/ResultDisplay';
 
-const BREAKER_VALUES = [125, 160, 200, 250, 315, 400, 500, 630];
+const BREAKER_VALUES = [50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630];
 
 function App() {
     const [powerA, setPowerA] = useState('');
@@ -23,10 +23,16 @@ function App() {
         // Denominator = 623.538
         const iCalc = pTotal > 0 ? (pTotal * 1000) / (Math.sqrt(3) * 400 * 0.9) : 0;
 
-        let breaker = BREAKER_VALUES.find(b => b >= iCalc);
+        let breaker;
+
+        if (iCalc > 0 && iCalc < 50) {
+            breaker = "méně než 50A";
+        } else {
+            breaker = BREAKER_VALUES.find(b => b >= iCalc);
+        }
 
         // Handle case where calculated current exceeds max standard breaker
-        if (!breaker && iCalc > 0) {
+        if (!breaker && iCalc >= 50) {
             if (iCalc > 630) breaker = 'Individuální (>630)';
             else breaker = 'N/A';
         } else if (iCalc === 0) {

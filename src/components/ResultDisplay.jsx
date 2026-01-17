@@ -13,7 +13,7 @@ const ResultDisplay = ({ current, breaker, totalPower }) => {
 
             <div className="breaker-recommendation">
                 <span className="breaker-label">Doporučený hlavní jistič</span>
-                <span className="breaker-badge">{breaker} A</span>
+                <span className="breaker-badge">{breaker}{typeof breaker === 'number' ? ' A' : ''}</span>
             </div>
         </div>
     );
