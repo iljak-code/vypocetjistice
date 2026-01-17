@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastro Kalkulačka Jističe</title>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #F4F9F4;
+            /* Very light green */
+            --primary: #F58220;
+            /* Gastroprojekce Orange */
+            --primary-hover: #d96e11;
+            --text-main: #000000;
+            --text-muted: #4a5568;
+            --border: #e2e8e2;
+            --success: #198754;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        @media (max-height: 800px) {
+            body {
+                align-items: flex-start;
+            }
+        }
+
+        #root {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Flat Design Card with Green Hint */
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        h2 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Compact Layout */
+        .input-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            flex: 1;
+        }
+
+        label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        input {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            padding: 0.4rem 0.6rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(245, 130, 32, 0.2);
+        }
+
+        /* Settings Panel Compact */
+        .global-settings {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            border: none;
+            padding: 0 0 1rem 0;
+            margin-bottom: 0;
+        }
+
+        .global-settings h2 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .global-settings .input-field {
+            flex: 0 0 100px;
+        }
+
+        /* Result Section */
+        .result-card {
+            text-align: center;
+            background: #ffffff;
+            border: 2px solid var(--card-bg);
+            /* Use card green as border for subtle link */
+            border-radius: 0.5rem;
+            padding: 1.25rem 1rem;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .amp-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .amp-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-left: 0.25rem;
+        }
+
+        .breaker-recommendation {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .breaker-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .breaker-badge {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.25rem 1.25rem;
+            border-radius: 0.25rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .total-power {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.5rem;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .contact-text {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .contact-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Disclaimer Footer */
+        .disclaimer {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #9ca3af;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+
+        // --- Components ---
+
+        const InputGroup = ({ title, power, setPower, coeff, setCoeff, defaultCoeff, minCoeff, maxCoeff }) => {
+            useEffect(() => {
+                if (coeff === '') {
+                    setCoeff(defaultCoeff);
+                }
+            }, [defaultCoeff, setCoeff]);
+
+            return (
+                <div className="panel">
+                    <h2>{title}</h2>
+                    <div className="input-row">
+                        <div className="input-field">
+                            <label>Instalovaný příkon (kW)</label>
+                            <input
+                                type="number"
+                                min="0"
+                                step="0.1"
+                                value={power}
+                                onChange={(e) => setPower(e.target.value === '' ? '' : Math.max(0, parseFloat(e.target.value)))}
+                                placeholder="0"
+                            />
+                        </div>
+                        <div className="input-field">
+                            <label>Koeficient {minCoeff && maxCoeff ? `(${minCoeff}-${maxCoeff})` : ''}</label>
+                            <input
+                                type="number"
+                                min={minCoeff || "0"}
+                                max={maxCoeff || "1"}
+                                step="0.01"
+                                value={coeff}
+                                onChange={(e) => setCoeff(e.target.value)}
+                                placeholder={defaultCoeff}
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ResultDisplay = ({ current, breaker, totalPower }) => {
+            return (
+                <div className="result-card">
+                    <div className="total-power">
+                        Celkový výpočtový příkon: <strong>{totalPower.toFixed(2)} kW</strong>
+                    </div>
+
+                    <div className="result-row">
+                        <div className="breaker-recommendation">
+                            <span className="breaker-label">Proud</span>
+                            <div className="amp-value">
+                                {current.toFixed(1)}<span className="amp-unit">A</span>
+                            </div>
+                        </div>
+
+                        <div className="breaker-recommendation">
+                            <span className="breaker-label">Doporučený jistič</span>
+                            <span className="breaker-badge">{breaker} A</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ContactSection = () => {
+            return (
+                <div className="contact-section">
+                    <div className="contact-text">Potřebujete poradit s návrhem? Kontaktujte našeho specialistu na gastroprovozy.</div>
+                    <a href="mailto:projekce@gastroprojekce.cz" className="contact-btn">projekce@gastroprojekce.cz</a>
+                </div>
+            );
+        };
+
+        const Disclaimer = () => {
+            return (
+                <div className="disclaimer">
+                    Upozornění: Veškeré výpočty jsou pouze orientační. Pro finální stanovení velikosti jističe a realizaci je nezbytné nechat zpracovat oficiální projekt elektro.
+                </div>
+            );
+        };
+
+        // --- Main App Logic ---
+
+        const BREAKER_VALUES = [16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630];
+
+        function App() {
+            // Global Settings
+            const [cosPhi, setCosPhi] = useState(0.9);
+
+            // Group 1: 230V
+            const [power1, setPower1] = useState('');
+            const [coeff1, setCoeff1] = useState(0.7);
+
+            // Group 2: 400V (Variable)
+            const [power2, setPower2] = useState('');
+            const [coeff2, setCoeff2] = useState(0.7);
+
+            // Group 3: Energy System
+            const [power3, setPower3] = useState('');
+            const [coeff3, setCoeff3] = useState(0.4);
+
+            const { totalPower, current, recommendedBreaker } = useMemo(() => {
+                const p1 = parseFloat(power1) || 0;
+                const c1 = parseFloat(coeff1) || 0;
+
+                const p2 = parseFloat(power2) || 0;
+                const c2 = parseFloat(coeff2) || 0;
+
+                const p3 = parseFloat(power3) || 0;
+                const c3 = parseFloat(coeff3) || 0;
+
+                const pf = parseFloat(cosPhi) || 0.9;
+
+                const pTotal = (p1 * c1) + (p2 * c2) + (p3 * c3); // Total Power in kW
+
+                // I = P * 1000 / (sqrt(3) * 400 * cosPhi)
+                const iCalc = (pTotal > 0 && pf > 0) ? (pTotal * 1000) / (Math.sqrt(3) * 400 * pf) : 0;
+
+                let breaker = BREAKER_VALUES.find(b => b >= iCalc);
+
+                if (!breaker && iCalc > 0) {
+                    if (iCalc > 630) breaker = 'Individuální (>630)';
+                    else breaker = 'N/A';
+                } else if (iCalc === 0) {
+                    breaker = '-';
+                }
+
+                return {
+                    totalPower: pTotal,
+                    current: iCalc,
+                    recommendedBreaker: breaker
+                };
+            }, [power1, coeff1, power2, coeff2, power3, coeff3, cosPhi]);
+
+            return (
+                <div className="container">
+                    <h1>Gastro Kalkulačka Jističe</h1>
+
+                    <div className="global-settings">
+                        <h2>Nastavení</h2>
+                        <div className="input-field">
+                            <label>Účiník ($\cos \phi$)</label>
+                            <input
+                                type="number"
+                                min="0.7"
+                                max="1.0"
+                                step="0.01"
+                                value={cosPhi}
+                                onChange={(e) => setCosPhi(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <InputGroup
+                        title="1. Spotřebiče 230V"
+                        power={power1}
+                        setPower={setPower1}
+                        coeff={coeff1}
+                        setCoeff={setCoeff1}
+                        defaultCoeff={0.7}
+                    />
+
+                    <InputGroup
+                        title="2. Spotřebiče 400V"
+                        power={power2}
+                        setPower={setPower2}
+                        coeff={coeff2}
+                        setCoeff={setCoeff2}
+                        defaultCoeff={0.7}
+                        minCoeff={0.4}
+                        maxCoeff={0.9}
+                    />
+
+                    <InputGroup
+                        title="3. Energy System (optimalizace)"
+                        power={power3}
+                        setPower={setPower3}
+                        coeff={coeff3}
+                        setCoeff={setCoeff3}
+                        defaultCoeff={0.4}
+                    />
+
+                    <ResultDisplay
+                        current={current}
+                        breaker={recommendedBreaker}
+                        totalPower={totalPower}
+                    />
+
+                    <ContactSection />
+                    <Disclaimer />
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
