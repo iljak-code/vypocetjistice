@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
 
-const InputGroup = ({ title, power, setPower, coeff, setCoeff, defaultCoeff }) => {
+const InputGroup = ({ title, power, setPower, coeff, setCoeff, defaultCoeff, minCoeff, maxCoeff }) => {
 
-    // Set default coefficient on mount if not provided or empty
     useEffect(() => {
         if (coeff === '') {
             setCoeff(defaultCoeff);
         }
-    }, [defaultCoeff, setCoeff]); // Don't depend on coeff to avoid loop
+    }, [defaultCoeff, setCoeff]);
 
     return (
-        <div className="glass-panel">
+        <div className="panel">
             <h2>{title}</h2>
-            <div className="input-grid">
+            <div className="input-row">
                 <div className="input-field">
-                    <label>Instalovaný výkon (kW)</label>
+                    <label>Instalovaný příkon (kW)</label>
                     <input
                         type="number"
                         min="0"
@@ -25,18 +24,14 @@ const InputGroup = ({ title, power, setPower, coeff, setCoeff, defaultCoeff }) =
                     />
                 </div>
                 <div className="input-field">
-                    <label>Koeficient soudobosti</label>
+                    <label>Koeficient {minCoeff && maxCoeff ? `(${minCoeff}-${maxCoeff})` : ''}</label>
                     <input
                         type="number"
-                        min="0.1"
-                        max="1"
+                        min={minCoeff || "0"}
+                        max={maxCoeff || "1"}
                         step="0.01"
                         value={coeff}
-                        onChange={(e) => {
-                            const val = parseFloat(e.target.value);
-                            // Allow typing by checking if valid number or empty, constraint applied better on blur or handled loosely
-                            setCoeff(e.target.value);
-                        }}
+                        onChange={(e) => setCoeff(e.target.value)}
                         placeholder={defaultCoeff}
                     />
                 </div>
